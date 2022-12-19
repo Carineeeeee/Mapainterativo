@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.wms.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/Mesoregies_1.js"></script>
+        <script src="data/Municpios_3.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-34.92281552478283,-62.57465274832293],[-24.679035908432958,-43.68491009356339]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleEarth_0');
+        map.getPane('pane_GoogleEarth_0').style.zIndex = 400;
+        var layer_GoogleEarth_0 = L.tileLayer('http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleEarth_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_GoogleEarth_0;
+        map.addLayer(layer_GoogleEarth_0);
+        function pop_Mesoregies_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nm_meso'] !== null ? autolinker.link(feature.properties['nm_meso'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cod_uf'] !== null ? autolinker.link(feature.properties['cod_uf'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Mesoregies_1_0() {
+            return {
+                pane: 'pane_Mesoregies_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(101,190,96,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Mesoregies_1');
+        map.getPane('pane_Mesoregies_1').style.zIndex = 401;
+        map.getPane('pane_Mesoregies_1').style['mix-blend-mode'] = 'normal';
+        var layer_Mesoregies_1 = new L.geoJson(json_Mesoregies_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Mesoregies_1',
+            layerName: 'layer_Mesoregies_1',
+            pane: 'pane_Mesoregies_1',
+            onEachFeature: pop_Mesoregies_1,
+            style: style_Mesoregies_1_0,
+        });
+        bounds_group.addLayer(layer_Mesoregies_1);
+        map.addLayer(layer_Mesoregies_1);
+        map.createPane('pane_RodoviasFederais_2');
+        map.getPane('pane_RodoviasFederais_2').style.zIndex = 402;
+        var layer_RodoviasFederais_2 = L.WMS.layer("https://geoservicos.inde.gov.br/geoserver/MInfra/ows?version=1.3.0", "Rodovias Federais", {
+            pane: 'pane_RodoviasFederais_2',
+            format: 'image/png',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            tiled: true,
+            info_format: 'text/html',
+            opacity: 1,
+            identify: false,
+            attribution: '',
+        });
+        map.addLayer(layer_RodoviasFederais_2);
+        function pop_Municpios_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cod_mun'] !== null ? autolinker.link(feature.properties['cod_mun'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nome_mun'] !== null ? autolinker.link(feature.properties['nome_mun'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['moradores'] !== null ? autolinker.link(feature.properties['moradores'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['renda'] !== null ? autolinker.link(feature.properties['renda'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['pop'] !== null ? autolinker.link(feature.properties['pop'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['pop_urb'] !== null ? autolinker.link(feature.properties['pop_urb'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['idosos'] !== null ? autolinker.link(feature.properties['idosos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['area'] !== null ? autolinker.link(feature.properties['area'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['leitosh'] !== null ? autolinker.link(feature.properties['leitosh'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['poph'] !== null ? autolinker.link(feature.properties['poph'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['leitos'] !== null ? autolinker.link(feature.properties['leitos'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['leitos_sus'] !== null ? autolinker.link(feature.properties['leitos_sus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['leitos_sus_reg'] !== null ? autolinker.link(feature.properties['leitos_sus_reg'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['pop_sus'] !== null ? autolinker.link(feature.properties['pop_sus'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['idososp'] !== null ? autolinker.link(feature.properties['idososp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['urbp'] !== null ? autolinker.link(feature.properties['urbp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['leitosp'] !== null ? autolinker.link(feature.properties['leitosp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['leitos_sus_p'] !== null ? autolinker.link(feature.properties['leitos_sus_p'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['svi'] !== null ? autolinker.link(feature.properties['svi'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['latitude'] !== null ? autolinker.link(feature.properties['latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['longitude'] !== null ? autolinker.link(feature.properties['longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Municpios_3_0() {
+            return {
+                pane: 'pane_Municpios_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,182,54,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Municpios_3');
+        map.getPane('pane_Municpios_3').style.zIndex = 403;
+        map.getPane('pane_Municpios_3').style['mix-blend-mode'] = 'normal';
+        var layer_Municpios_3 = new L.geoJson(json_Municpios_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Municpios_3',
+            layerName: 'layer_Municpios_3',
+            pane: 'pane_Municpios_3',
+            onEachFeature: pop_Municpios_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Municpios_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Municpios_3);
+        map.addLayer(layer_Municpios_3);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Municpios_3.png" /> Municípios': layer_Municpios_3,"Rodovias Federais": layer_RodoviasFederais_2,'<img src="legend/Mesoregies_1.png" /> Mesoregiões': layer_Mesoregies_1,"Google Earth": layer_GoogleEarth_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        var i = 0;
+        layer_Mesoregies_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['nm_meso'] !== null?String('<div style="color: #ffffff; font-size: 10pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['nm_meso']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Mesoregies_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        resetLabels([layer_Mesoregies_1]);
+        map.on("zoomend", function(){
+            resetLabels([layer_Mesoregies_1]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_Mesoregies_1]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_Mesoregies_1]);
+        });
+        </script>
+    </body>
+</html>
